@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import json
 import pickle
@@ -486,3 +487,11 @@ def create_opportunity(req: OpportunityRequest):
     OPPORTUNITIES.append(opportunity)
     return {"success": True, "opportunity": opportunity}
 
+# ── Serve Frontend ────────────────────────────────────────────────────────────
+FRONTEND_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend", "index.html")
+
+@app.get("/{full_path:path}")
+def serve_frontend(full_path: str):
+    if os.path.exists(FRONTEND_PATH):
+        return FileResponse(FRONTEND_PATH)
+    return {"message": "ARIS API is running. Frontend not found at expected path."}

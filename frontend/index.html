@@ -284,7 +284,7 @@ td.mono{font-family:var(--font-mono);font-size:12px}
 const { useState, useEffect, useCallback } = React;
 const { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, RadarChart, Radar, PolarGrid, PolarAngleAxis, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } = Recharts;
 
-const API = "http://localhost:8000/api";
+const API = window.location.hostname === "localhost" ? "http://localhost:8000/api" : "/api";
 
 function riskColor(level) {
   if (level === "High") return "#ef4444";
