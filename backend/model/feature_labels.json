@@ -1,0 +1,17 @@
+{
+  "attendance_rate": "Attendance Rate",
+  "attendance_trend": "Attendance Trend",
+  "avg_score": "Average Score",
+  "score_trend": "Score Trend",
+  "assignments_ontime_pct": "On-Time Submissions",
+  "avg_submission_delay": "Submission Delay (days)",
+  "library_visits_per_week": "Library Visits/Week",
+  "failed_subjects": "Failed Subjects",
+  "sgpa": "SGPA",
+  "sgpa_trend": "SGPA Trend",
+  "days_inactive": "Days Inactive",
+  "backlogs": "Backlogs",
+  "first_gen": "First-Gen Student",
+  "is_rural": "Rural Origin",
+  "has_scholarship": "Has Scholarship"
+}

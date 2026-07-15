@@ -1,0 +1,652 @@
+[
+  {
+    "student_id": "STU1003",
+    "name": "Revathi Mishra",
+    "department": "Civil",
+    "risk_score": 0.684,
+    "risk_level": "High",
+    "contributions": [
+      {
+        "feature": "days_inactive",
+        "label": "Days Inactive",
+        "value": 21.0,
+        "impact": 0.5704,
+        "direction": "risk"
+      },
+      {
+        "feature": "attendance_trend",
+        "label": "Attendance Trend",
+        "value": -20.0,
+        "impact": 0.264,
+        "direction": "risk"
+      },
+      {
+        "feature": "avg_submission_delay",
+        "label": "Submission Delay (days)",
+        "value": 6.7,
+        "impact": 0.2227,
+        "direction": "risk"
+      },
+      {
+        "feature": "assignments_ontime_pct",
+        "label": "On-Time Submissions",
+        "value": 25.8,
+        "impact": 0.1458,
+        "direction": "risk"
+      },
+      {
+        "feature": "attendance_rate",
+        "label": "Attendance Rate",
+        "value": 52.7,
+        "impact": 0.1183,
+        "direction": "risk"
+      },
+      {
+        "feature": "sgpa_trend",
+        "label": "SGPA Trend",
+        "value": -1.09,
+        "impact": 0.107,
+        "direction": "risk"
+      },
+      {
+        "feature": "avg_score",
+        "label": "Average Score",
+        "value": 43.8,
+        "impact": 0.0,
+        "direction": "protective"
+      },
+      {
+        "feature": "score_trend",
+        "label": "Score Trend",
+        "value": -11.3,
+        "impact": 0.0,
+        "direction": "protective"
+      }
+    ]
+  },
+  {
+    "student_id": "STU1013",
+    "name": "Nandhini Singh",
+    "department": "Civil",
+    "risk_score": 0.705,
+    "risk_level": "High",
+    "contributions": [
+      {
+        "feature": "days_inactive",
+        "label": "Days Inactive",
+        "value": 19.0,
+        "impact": 0.4812,
+        "direction": "risk"
+      },
+      {
+        "feature": "attendance_trend",
+        "label": "Attendance Trend",
+        "value": -14.2,
+        "impact": 0.1709,
+        "direction": "risk"
+      },
+      {
+        "feature": "attendance_rate",
+        "label": "Attendance Rate",
+        "value": 52.6,
+        "impact": 0.1191,
+        "direction": "risk"
+      },
+      {
+        "feature": "assignments_ontime_pct",
+        "label": "On-Time Submissions",
+        "value": 32.6,
+        "impact": 0.1188,
+        "direction": "risk"
+      },
+      {
+        "feature": "sgpa_trend",
+        "label": "SGPA Trend",
+        "value": -1.13,
+        "impact": 0.1113,
+        "direction": "risk"
+      },
+      {
+        "feature": "avg_submission_delay",
+        "label": "Submission Delay (days)",
+        "value": 4.8,
+        "impact": 0.0885,
+        "direction": "risk"
+      },
+      {
+        "feature": "avg_score",
+        "label": "Average Score",
+        "value": 40.7,
+        "impact": 0.0,
+        "direction": "protective"
+      },
+      {
+        "feature": "score_trend",
+        "label": "Score Trend",
+        "value": -11.8,
+        "impact": 0.0,
+        "direction": "protective"
+      }
+    ]
+  },
+  {
+    "student_id": "STU1016",
+    "name": "Raja Gupta",
+    "department": "Computer Science",
+    "risk_score": 0.721,
+    "risk_level": "High",
+    "contributions": [
+      {
+        "feature": "days_inactive",
+        "label": "Days Inactive",
+        "value": 14.0,
+        "impact": 0.2581,
+        "direction": "risk"
+      },
+      {
+        "feature": "avg_submission_delay",
+        "label": "Submission Delay (days)",
+        "value": 6.6,
+        "impact": 0.2157,
+        "direction": "risk"
+      },
+      {
+        "feature": "attendance_rate",
+        "label": "Attendance Rate",
+        "value": 41.6,
+        "impact": 0.2066,
+        "direction": "risk"
+      },
+      {
+        "feature": "attendance_trend",
+        "label": "Attendance Trend",
+        "value": -15.2,
+        "impact": 0.1869,
+        "direction": "risk"
+      },
+      {
+        "feature": "assignments_ontime_pct",
+        "label": "On-Time Submissions",
+        "value": 44.1,
+        "impact": 0.0733,
+        "direction": "risk"
+      },
+      {
+        "feature": "sgpa_trend",
+        "label": "SGPA Trend",
+        "value": -0.46,
+        "impact": 0.0398,
+        "direction": "risk"
+      },
+      {
+        "feature": "avg_score",
+        "label": "Average Score",
+        "value": 37.3,
+        "impact": 0.0,
+        "direction": "protective"
+      },
+      {
+        "feature": "score_trend",
+        "label": "Score Trend",
+        "value": -9.2,
+        "impact": 0.0,
+        "direction": "protective"
+      }
+    ]
+  },
+  {
+    "student_id": "STU1023",
+    "name": "Sowmya Iyer",
+    "department": "Electronics",
+    "risk_score": 0.729,
+    "risk_level": "High",
+    "contributions": [
+      {
+        "feature": "days_inactive",
+        "label": "Days Inactive",
+        "value": 21.0,
+        "impact": 0.5704,
+        "direction": "risk"
+      },
+      {
+        "feature": "attendance_rate",
+        "label": "Attendance Rate",
+        "value": 40.3,
+        "impact": 0.2169,
+        "direction": "risk"
+      },
+      {
+        "feature": "assignments_ontime_pct",
+        "label": "On-Time Submissions",
+        "value": 27.3,
+        "impact": 0.1398,
+        "direction": "risk"
+      },
+      {
+        "feature": "attendance_trend",
+        "label": "Attendance Trend",
+        "value": -6.6,
+        "impact": 0.0488,
+        "direction": "risk"
+      },
+      {
+        "feature": "sgpa_trend",
+        "label": "SGPA Trend",
+        "value": -0.43,
+        "impact": 0.0366,
+        "direction": "risk"
+      },
+      {
+        "feature": "avg_submission_delay",
+        "label": "Submission Delay (days)",
+        "value": 3.2,
+        "impact": -0.0245,
+        "direction": "protective"
+      },
+      {
+        "feature": "avg_score",
+        "label": "Average Score",
+        "value": 35.3,
+        "impact": 0.0,
+        "direction": "protective"
+      },
+      {
+        "feature": "score_trend",
+        "label": "Score Trend",
+        "value": -14.0,
+        "impact": 0.0,
+        "direction": "protective"
+      }
+    ]
+  },
+  {
+    "student_id": "STU1001",
+    "name": "Padma Venkat",
+    "department": "Civil",
+    "risk_score": 0.547,
+    "risk_level": "Medium",
+    "contributions": [
+      {
+        "feature": "days_inactive",
+        "label": "Days Inactive",
+        "value": 16.0,
+        "impact": 0.3473,
+        "direction": "risk"
+      },
+      {
+        "feature": "avg_submission_delay",
+        "label": "Submission Delay (days)",
+        "value": 6.8,
+        "impact": 0.2298,
+        "direction": "risk"
+      },
+      {
+        "feature": "attendance_trend",
+        "label": "Attendance Trend",
+        "value": -16.1,
+        "impact": 0.2014,
+        "direction": "risk"
+      },
+      {
+        "feature": "assignments_ontime_pct",
+        "label": "On-Time Submissions",
+        "value": 38.2,
+        "impact": 0.0967,
+        "direction": "risk"
+      },
+      {
+        "feature": "sgpa_trend",
+        "label": "SGPA Trend",
+        "value": -0.96,
+        "impact": 0.0931,
+        "direction": "risk"
+      },
+      {
+        "feature": "attendance_rate",
+        "label": "Attendance Rate",
+        "value": 61.8,
+        "impact": 0.0459,
+        "direction": "risk"
+      },
+      {
+        "feature": "avg_score",
+        "label": "Average Score",
+        "value": 51.6,
+        "impact": 0.0,
+        "direction": "protective"
+      },
+      {
+        "feature": "score_trend",
+        "label": "Score Trend",
+        "value": -11.3,
+        "impact": 0.0,
+        "direction": "protective"
+      }
+    ]
+  },
+  {
+    "student_id": "STU1006",
+    "name": "Meena Kumar",
+    "department": "Information Technology",
+    "risk_score": 0.623,
+    "risk_level": "Medium",
+    "contributions": [
+      {
+        "feature": "avg_submission_delay",
+        "label": "Submission Delay (days)",
+        "value": 9.7,
+        "impact": 0.4347,
+        "direction": "risk"
+      },
+      {
+        "feature": "attendance_trend",
+        "label": "Attendance Trend",
+        "value": -13.0,
+        "impact": 0.1516,
+        "direction": "risk"
+      },
+      {
+        "feature": "assignments_ontime_pct",
+        "label": "On-Time Submissions",
+        "value": 46.2,
+        "impact": 0.065,
+        "direction": "risk"
+      },
+      {
+        "feature": "days_inactive",
+        "label": "Days Inactive",
+        "value": 7.0,
+        "impact": -0.0543,
+        "direction": "protective"
+      },
+      {
+        "feature": "sgpa_trend",
+        "label": "SGPA Trend",
+        "value": -0.34,
+        "impact": 0.027,
+        "direction": "risk"
+      },
+      {
+        "feature": "attendance_rate",
+        "label": "Attendance Rate",
+        "value": 64.8,
+        "impact": 0.022,
+        "direction": "risk"
+      },
+      {
+        "feature": "avg_score",
+        "label": "Average Score",
+        "value": 42.0,
+        "impact": 0.0,
+        "direction": "protective"
+      },
+      {
+        "feature": "score_trend",
+        "label": "Score Trend",
+        "value": -4.4,
+        "impact": 0.0,
+        "direction": "protective"
+      }
+    ]
+  },
+  {
+    "student_id": "STU1011",
+    "name": "Revathi Patel",
+    "department": "Electronics",
+    "risk_score": 0.632,
+    "risk_level": "Medium",
+    "contributions": [
+      {
+        "feature": "attendance_rate",
+        "label": "Attendance Rate",
+        "value": 51.1,
+        "impact": 0.131,
+        "direction": "risk"
+      },
+      {
+        "feature": "attendance_trend",
+        "label": "Attendance Trend",
+        "value": -11.7,
+        "impact": 0.1307,
+        "direction": "risk"
+      },
+      {
+        "feature": "days_inactive",
+        "label": "Days Inactive",
+        "value": 11.0,
+        "impact": 0.1242,
+        "direction": "risk"
+      },
+      {
+        "feature": "sgpa_trend",
+        "label": "SGPA Trend",
+        "value": -0.84,
+        "impact": 0.0803,
+        "direction": "risk"
+      },
+      {
+        "feature": "assignments_ontime_pct",
+        "label": "On-Time Submissions",
+        "value": 47.3,
+        "impact": 0.0606,
+        "direction": "risk"
+      },
+      {
+        "feature": "avg_submission_delay",
+        "label": "Submission Delay (days)",
+        "value": 3.8,
+        "impact": 0.0179,
+        "direction": "risk"
+      },
+      {
+        "feature": "avg_score",
+        "label": "Average Score",
+        "value": 40.3,
+        "impact": 0.0,
+        "direction": "protective"
+      },
+      {
+        "feature": "score_trend",
+        "label": "Score Trend",
+        "value": -3.6,
+        "impact": 0.0,
+        "direction": "protective"
+      }
+    ]
+  },
+  {
+    "student_id": "STU1000",
+    "name": "Kumaran Joshi",
+    "department": "Electronics",
+    "risk_score": 0.236,
+    "risk_level": "Low",
+    "contributions": [
+      {
+        "feature": "avg_submission_delay",
+        "label": "Submission Delay (days)",
+        "value": 0.0,
+        "impact": -0.2506,
+        "direction": "protective"
+      },
+      {
+        "feature": "days_inactive",
+        "label": "Days Inactive",
+        "value": 3.0,
+        "impact": -0.2328,
+        "direction": "protective"
+      },
+      {
+        "feature": "assignments_ontime_pct",
+        "label": "On-Time Submissions",
+        "value": 97.5,
+        "impact": -0.1381,
+        "direction": "protective"
+      },
+      {
+        "feature": "attendance_trend",
+        "label": "Attendance Trend",
+        "value": 4.8,
+        "impact": -0.1342,
+        "direction": "protective"
+      },
+      {
+        "feature": "sgpa_trend",
+        "label": "SGPA Trend",
+        "value": 0.49,
+        "impact": -0.0616,
+        "direction": "protective"
+      },
+      {
+        "feature": "attendance_rate",
+        "label": "Attendance Rate",
+        "value": 69.7,
+        "impact": -0.017,
+        "direction": "protective"
+      },
+      {
+        "feature": "avg_score",
+        "label": "Average Score",
+        "value": 57.1,
+        "impact": 0.0,
+        "direction": "protective"
+      },
+      {
+        "feature": "score_trend",
+        "label": "Score Trend",
+        "value": 6.4,
+        "impact": -0.0,
+        "direction": "protective"
+      }
+    ]
+  },
+  {
+    "student_id": "STU1002",
+    "name": "Pooja Pillai",
+    "department": "Information Technology",
+    "risk_score": 0.133,
+    "risk_level": "Low",
+    "contributions": [
+      {
+        "feature": "days_inactive",
+        "label": "Days Inactive",
+        "value": 2.0,
+        "impact": -0.2774,
+        "direction": "protective"
+      },
+      {
+        "feature": "attendance_trend",
+        "label": "Attendance Trend",
+        "value": 5.7,
+        "impact": -0.1487,
+        "direction": "protective"
+      },
+      {
+        "feature": "avg_submission_delay",
+        "label": "Submission Delay (days)",
+        "value": 1.5,
+        "impact": -0.1446,
+        "direction": "protective"
+      },
+      {
+        "feature": "assignments_ontime_pct",
+        "label": "On-Time Submissions",
+        "value": 90.8,
+        "impact": -0.1116,
+        "direction": "protective"
+      },
+      {
+        "feature": "sgpa_trend",
+        "label": "SGPA Trend",
+        "value": 0.36,
+        "impact": -0.0477,
+        "direction": "protective"
+      },
+      {
+        "feature": "attendance_rate",
+        "label": "Attendance Rate",
+        "value": 68.9,
+        "impact": -0.0106,
+        "direction": "protective"
+      },
+      {
+        "feature": "avg_score",
+        "label": "Average Score",
+        "value": 83.1,
+        "impact": -0.0,
+        "direction": "protective"
+      },
+      {
+        "feature": "score_trend",
+        "label": "Score Trend",
+        "value": 4.3,
+        "impact": -0.0,
+        "direction": "protective"
+      }
+    ]
+  },
+  {
+    "student_id": "STU1004",
+    "name": "Ananya Das",
+    "department": "Electronics",
+    "risk_score": 0.136,
+    "risk_level": "Low",
+    "contributions": [
+      {
+        "feature": "days_inactive",
+        "label": "Days Inactive",
+        "value": 2.0,
+        "impact": -0.2774,
+        "direction": "protective"
+      },
+      {
+        "feature": "avg_submission_delay",
+        "label": "Submission Delay (days)",
+        "value": 0.5,
+        "impact": -0.2153,
+        "direction": "protective"
+      },
+      {
+        "feature": "attendance_rate",
+        "label": "Attendance Rate",
+        "value": 87.4,
+        "impact": -0.1578,
+        "direction": "protective"
+      },
+      {
+        "feature": "sgpa_trend",
+        "label": "SGPA Trend",
+        "value": 0.96,
+        "impact": -0.1117,
+        "direction": "protective"
+      },
+      {
+        "feature": "assignments_ontime_pct",
+        "label": "On-Time Submissions",
+        "value": 85.8,
+        "impact": -0.0918,
+        "direction": "protective"
+      },
+      {
+        "feature": "attendance_trend",
+        "label": "Attendance Trend",
+        "value": -4.8,
+        "impact": 0.0199,
+        "direction": "risk"
+      },
+      {
+        "feature": "avg_score",
+        "label": "Average Score",
+        "value": 73.9,
+        "impact": -0.0,
+        "direction": "protective"
+      },
+      {
+        "feature": "score_trend",
+        "label": "Score Trend",
+        "value": -0.1,
+        "impact": -0.0,
+        "direction": "protective"
+      }
+    ]
+  }
+]

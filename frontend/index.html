@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ARIS — Academic Risk Intelligence System</title>
+<meta name="description" content="ARIS — Academic Risk Intelligence System — real-time faculty dashboard with ML-powered dropout prediction, SHAP explanations, intervention routing, and equity analytics."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/recharts@2.8.0/umd/Recharts.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0b0f1a;
+  --bg2:#111827;
+  --bg3:#1a2235;
+  --card:#151e2e;
+  --border:#1f2d45;
+  --border2:#263548;
+  --text:#e8eef8;
+  --text2:#8fa3bf;
+  --text3:#4d6480;
+  --accent:#3b82f6;
+  --accent2:#60a5fa;
+  --green:#10b981;
+  --yellow:#f59e0b;
+  --red:#ef4444;
+  --red2:#fca5a5;
+  --purple:#8b5cf6;
+  --teal:#14b8a6;
+  --font-display:'DM Serif Display',serif;
+  --font-body:'DM Sans',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+.light{
+  --bg:#f0f2f5;
+  --bg2:#ffffff;
+  --bg3:#e8ecf1;
+  --card:#ffffff;
+  --border:#d4dae3;
+  --border2:#c5ced9;
+  --text:#1a1f2e;
+  --text2:#4a5568;
+  --text3:#8494a7;
+  --accent:#2563eb;
+  --accent2:#3b82f6;
+  --green:#059669;
+  --yellow:#d97706;
+  --red:#dc2626;
+  --red2:#f87171;
+  --purple:#7c3aed;
+  --teal:#0d9488;
+}
+html,body,#root{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);transition:background 0.3s,color 0.3s}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* THEME TOGGLE */
+.theme-toggle{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:4px;cursor:pointer;transition:all 0.3s}
+.theme-toggle-track{width:44px;height:24px;border-radius:12px;background:var(--border2);position:relative;transition:background 0.3s}
+.theme-toggle-thumb{width:18px;height:18px;border-radius:50%;background:var(--accent);position:absolute;top:3px;left:3px;transition:transform 0.3s,background 0.3s;display:flex;align-items:center;justify-content:center;font-size:10px}
+.light .theme-toggle-thumb{transform:translateX(20px);background:var(--yellow)}
+.theme-toggle-label{font-size:11px;color:var(--text3);font-weight:600;letter-spacing:0.3px;min-width:20px}
+
+/* LOGIN */
+.login-page{display:flex;align-items:center;justify-content:center;height:100vh;background:linear-gradient(135deg,#0b0f1a 0%,#1a1040 50%,#0b0f1a 100%)}
+.light .login-page{background:linear-gradient(135deg,#e0e7ff 0%,#f0f2f5 50%,#e0e7ff 100%)}
+.light .login-card{box-shadow:0 20px 60px rgba(0,0,0,0.1)}
+.light .custom-tooltip{background:#fff;border-color:var(--border)}
+.login-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:48px 40px;width:420px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.login-logo{font-family:var(--font-display);font-size:36px;margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--text3);margin-bottom:32px;letter-spacing:0.5px}
+.login-input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;font-size:14px;color:var(--text);font-family:var(--font-body);margin-bottom:12px;outline:none;transition:border 0.2s}
+.login-input:focus{border-color:var(--accent)}
+.login-input::placeholder{color:var(--text3)}
+.login-btn{width:100%;background:linear-gradient(135deg,var(--accent),var(--purple));border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:600;color:#fff;cursor:pointer;font-family:var(--font-body);transition:opacity 0.2s;margin-top:8px}
+.login-btn:hover{opacity:0.9}
+.login-error{color:var(--red);font-size:13px;margin-top:8px}
+.login-hint{margin-top:20px;background:var(--bg3);border-radius:10px;padding:14px;text-align:left}
+.login-hint-title{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px}
+.login-hint-row{font-size:12px;color:var(--text2);font-family:var(--font-mono);margin-bottom:4px}
+
+/* SIDEBAR */
+.sidebar{width:240px;min-width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:0}
+.sidebar-logo{padding:24px 20px 20px;border-bottom:1px solid var(--border)}
+.logo-title{font-family:var(--font-display);font-size:22px;color:var(--text);letter-spacing:-0.5px}
+.logo-sub{font-size:11px;color:var(--text3);margin-top:2px;letter-spacing:0.5px;text-transform:uppercase}
+.sidebar-nav{padding:16px 12px;flex:1;overflow-y:auto}
+.nav-section{font-size:10px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:8px 8px 6px;margin-top:8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;cursor:pointer;font-size:13.5px;font-weight:500;color:var(--text2);transition:all 0.15s;margin-bottom:2px}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:rgba(59,130,246,0.15);color:var(--accent2)}
+.nav-icon{font-size:16px;width:20px;text-align:center}
+.sidebar-footer{padding:16px;border-top:1px solid var(--border)}
+.model-badge{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:8px;padding:10px 12px}
+.model-badge-title{font-size:11px;color:var(--green);font-weight:600;letter-spacing:0.3px}
+.model-badge-val{font-size:20px;font-family:var(--font-mono);color:var(--green);font-weight:500;margin-top:2px}
+.model-badge-sub{font-size:10px;color:var(--text3);margin-top:1px}
+.sidebar-user{padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sidebar-user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:600}
+.sidebar-user-info{flex:1}
+.sidebar-user-name{font-size:12px;font-weight:600;color:var(--text)}
+.sidebar-user-role{font-size:10px;color:var(--text3)}
+.logout-btn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:4px}
+.logout-btn:hover{color:var(--red)}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.topbar-title{font-family:var(--font-display);font-size:20px;letter-spacing:-0.3px}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.topbar-badge{background:var(--bg3);border:1px solid var(--border2);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--text2)}
+.content{padding:24px 28px;flex:1}
+
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.card-title{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;font-weight:600;margin-bottom:12px}
+
+/* STAT CARDS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.stat-card.blue::before{background:var(--accent)}
+.stat-card.red::before{background:var(--red)}
+.stat-card.yellow::before{background:var(--yellow)}
+.stat-card.green::before{background:var(--green)}
+.stat-icon{font-size:28px;margin-bottom:10px}
+.stat-val{font-size:32px;font-family:var(--font-mono);font-weight:500;line-height:1}
+.stat-label{font-size:12px;color:var(--text3);margin-top:6px;font-weight:500;letter-spacing:0.2px}
+.stat-sub{font-size:11px;color:var(--text3);margin-top:4px}
+
+/* GRID LAYOUTS */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px}
+.full-row{margin-bottom:24px}
+
+/* RISK BADGE */
+.risk-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:0.3px}
+.risk-badge.High{background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid rgba(239,68,68,0.25)}
+.risk-badge.Medium{background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.25)}
+.risk-badge.Low{background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25)}
+
+/* TABLE */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{border-bottom:1px solid var(--border2)}
+th{text-align:left;padding:10px 12px;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px}
+tbody tr{border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.1s}
+tbody tr:hover{background:var(--bg3)}
+td{padding:11px 12px;color:var(--text2)}
+td.name{color:var(--text);font-weight:500}
+td.mono{font-family:var(--font-mono);font-size:12px}
+
+/* PROGRESS BAR */
+.prog-bar{height:6px;border-radius:3px;background:var(--border2);overflow:hidden;margin-top:4px}
+.prog-fill{height:100%;border-radius:3px;transition:width 0.4s}
+
+/* STUDENT DETAIL */
+.detail-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:16px}
+.detail-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:22px;font-family:var(--font-display);color:#fff;flex-shrink:0}
+.detail-info{flex:1;margin-left:16px}
+.detail-name{font-family:var(--font-display);font-size:24px;letter-spacing:-0.5px}
+.detail-meta{font-size:13px;color:var(--text3);margin-top:4px}
+.back-btn{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 16px;font-size:13px;color:var(--text2);cursor:pointer;transition:all 0.15s;font-family:var(--font-body)}
+.back-btn:hover{color:var(--text);border-color:var(--accent)}
+
+/* FACTOR BARS */
+.factor-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.factor-label{font-size:12px;color:var(--text2);width:160px;flex-shrink:0}
+.factor-bar-wrap{flex:1;height:20px;background:var(--border2);border-radius:4px;overflow:hidden;display:flex;align-items:center;position:relative}
+.factor-fill{height:100%;border-radius:4px;transition:width 0.5s}
+.factor-fill.risk-fill{background:rgba(239,68,68,0.7)}
+.factor-fill.prot-fill{background:rgba(16,185,129,0.7)}
+.factor-val{font-size:11px;font-family:var(--font-mono);color:var(--text2);width:50px;text-align:right;flex-shrink:0}
+
+/* INTERVENTION */
+.intervention-card{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px}
+.intervention-icon{font-size:22px;flex-shrink:0;margin-top:2px}
+.intervention-type{font-weight:600;font-size:13px;color:var(--text)}
+.intervention-reason{font-size:12px;color:var(--text3);margin-top:3px}
+.priority-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px}
+.priority-dot.High{background:var(--red)}
+.priority-dot.Medium{background:var(--yellow)}
+.priority-dot.Low{background:var(--green)}
+
+/* FILTERS */
+.filters{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.filter-select{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--text2);font-family:var(--font-body);cursor:pointer}
+.filter-select:focus{outline:none;border-color:var(--accent)}
+.search-input{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:7px 14px;font-size:13px;color:var(--text);font-family:var(--font-body);width:220px}
+.search-input::placeholder{color:var(--text3)}
+.search-input:focus{outline:none;border-color:var(--accent)}
+
+/* SUBJECT SCORES */
+.subject-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:24px}
+.subject-card{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:14px;text-align:center}
+.subject-name{font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.3px}
+.subject-score{font-size:26px;font-family:var(--font-mono);font-weight:500}
+.subject-score.good{color:var(--green)}
+.subject-score.avg{color:var(--yellow)}
+.subject-score.poor{color:var(--red)}
+
+/* EQUITY */
+.equity-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+.equity-row:last-child{border-bottom:none}
+.equity-label{font-size:13px;color:var(--text2);font-weight:500}
+.equity-pct{font-size:13px;font-family:var(--font-mono);color:var(--text)}
+
+/* FEATURE IMP */
+.fi-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.fi-label{font-size:12px;color:var(--text2);width:180px;flex-shrink:0}
+.fi-bar{flex:1;height:16px;background:var(--border2);border-radius:4px;overflow:hidden}
+.fi-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--purple));border-radius:4px}
+.fi-val{font-size:11px;font-family:var(--font-mono);color:var(--text3);width:45px;text-align:right}
+
+/* HEATMAP */
+.heatmap-grid{display:grid;gap:2px;margin-top:8px}
+.heatmap-cell{border-radius:4px;padding:6px 4px;text-align:center;font-size:11px;font-family:var(--font-mono);font-weight:500;transition:transform 0.15s}
+.heatmap-cell:hover{transform:scale(1.05)}
+.heatmap-label{font-size:11px;color:var(--text3);text-align:right;padding-right:8px;display:flex;align-items:center;justify-content:flex-end}
+.heatmap-header{font-size:10px;color:var(--text3);text-align:center;padding:4px;text-transform:uppercase;letter-spacing:0.5px}
+
+/* MODAL */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:1000}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;width:460px;max-width:90vw}
+.modal-title{font-family:var(--font-display);font-size:20px;margin-bottom:16px}
+.modal-select{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text);font-family:var(--font-body);margin-bottom:12px}
+.modal-textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;font-size:13px;color:var(--text);font-family:var(--font-body);margin-bottom:16px;min-height:80px;resize:vertical}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end}
+.btn{border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-body);transition:opacity 0.15s}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff}
+.btn-secondary{background:var(--bg3);border:1px solid var(--border2);color:var(--text2)}
+.btn:hover{opacity:0.85}
+
+/* STATUS BADGE */
+.status-badge{display:inline-flex;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600;letter-spacing:0.3px}
+.status-badge.Completed{background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25)}
+.status-badge.In.Progress,.status-badge.InProgress{background:rgba(59,130,246,0.15);color:#93c5fd;border:1px solid rgba(59,130,246,0.25)}
+.status-badge.Scheduled{background:rgba(245,158,11,0.15);color:#fcd34d;border:1px solid rgba(245,158,11,0.25)}
+
+/* CONFUSION MATRIX */
+.cm-grid{display:grid;grid-template-columns:auto 1fr 1fr;gap:2px;max-width:280px}
+.cm-cell{padding:12px;text-align:center;border-radius:6px;font-family:var(--font-mono);font-size:16px;font-weight:600}
+.cm-header{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.5px;padding:8px;text-align:center}
+
+/* LOADING */
+.loading{display:flex;align-items:center;justify-content:center;height:200px;color:var(--text3);font-size:14px}
+
+/* TOOLTIP */
+.custom-tooltip{background:var(--card);border:1px solid var(--border2);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text)}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.pulse{animation:pulse 2s infinite}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn 0.3s ease-out}
+
+/* OPPORTUNITY CARDS */
+.opp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;margin-top:16px}
+.opp-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;overflow:hidden;transition:transform 0.15s,box-shadow 0.15s}
+.opp-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.opp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0}
+.opp-card.Hackathon::before{background:#3b82f6}
+.opp-card.Scholarship::before{background:#10b981}
+.opp-card.Funding::before{background:#8b5cf6}
+.opp-cat{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px}
+.opp-cat.Hackathon{background:rgba(59,130,246,0.15);color:#93c5fd;border:1px solid rgba(59,130,246,0.25)}
+.opp-cat.Scholarship{background:rgba(16,185,129,0.15);color:#6ee7b7;border:1px solid rgba(16,185,129,0.25)}
+.opp-cat.Funding{background:rgba(139,92,246,0.15);color:#c4b5fd;border:1px solid rgba(139,92,246,0.25)}
+.opp-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.3}
+.opp-desc{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:12px}
+.opp-deadline{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);font-family:var(--font-mono)}
+.opp-deadline-icon{font-size:14px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useCallback } = React;
+const { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, RadarChart, Radar, PolarGrid, PolarAngleAxis, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } = Recharts;
+
+const API = "http://localhost:8000/api";
+
+function riskColor(level) {
+  if (level === "High") return "#ef4444";
+  if (level === "Medium") return "#f59e0b";
+  return "#10b981";
+}
+function scoreColor(v) {
+  if (v >= 70) return "good";
+  if (v >= 50) return "avg";
+  return "poor";
+}
+function attendanceColor(v) {
+  if (v >= 75) return "#10b981";
+  if (v >= 60) return "#f59e0b";
+  return "#ef4444";
+}
+function heatColor(pct) {
+  if (pct >= 50) return "rgba(239,68,68,0.85)";
+  if (pct >= 35) return "rgba(245,158,11,0.7)";
+  if (pct >= 20) return "rgba(245,158,11,0.4)";
+  return "rgba(16,185,129,0.3)";
+}
+
+// ── Login Screen ─────────────────────────────────────────────────────────────
+function LoginScreen({ onLogin }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(`${API}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        onLogin(data);
+      } else {
+        setError("Invalid credentials");
+      }
+    } catch (err) {
+      setError("Server not reachable. Start the backend first.");
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="login-page">
+      <div className="login-card fade-in">
+        <div className="login-logo">ARIS</div>
+        <div className="login-sub">Academic Risk Intelligence System</div>
+        <form onSubmit={handleLogin}>
+          <input className="login-input" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} autoFocus/>
+          <input className="login-input" type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)}/>
+          <button className="login-btn" type="submit" disabled={loading}>{loading ? "Signing in…" : "Sign In"}</button>
+        </form>
+        {error && <div className="login-error">{error}</div>}
+        <div className="login-hint">
+          <div className="login-hint-title">Demo Credentials</div>
+          <div className="login-hint-row">advisor1 / edusense2025</div>
+          <div className="login-hint-row">admin / admin123</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Sidebar ──────────────────────────────────────────────────────────────────
+function Sidebar({ page, setPage, metrics, user, onLogout }) {
+  const nav = [
+    { id: "faculty", label: "Faculty Dashboard", icon: "🏫", section: "DASHBOARDS" },
+    { id: "students", label: "Student List", icon: "👥", section: "" },
+    { id: "tracker", label: "Intervention Tracker", icon: "📋", section: "" },
+    { id: "hub", label: "Support Hub", icon: "🚀", section: "" },
+    { id: "equity", label: "Equity Analytics", icon: "⚖️", section: "ANALYTICS" },
+    { id: "shap", label: "SHAP Explanations", icon: "🔬", section: "" },
+    { id: "model", label: "Model Metrics", icon: "🤖", section: "SYSTEM" },
+  ];
+  let lastSection = null;
+  return (
+    <div className="sidebar">
+      <div className="sidebar-logo">
+        <div className="logo-title">ARIS</div>
+        <div className="logo-sub">Academic Risk Intelligence System</div>
+      </div>
+      <div className="sidebar-nav">
+        {nav.map(item => {
+          const showSection = item.section && item.section !== lastSection;
+          if (item.section) lastSection = item.section;
+          return (
+            <div key={item.id}>
+              {showSection && <div className="nav-section">{item.section}</div>}
+              <div className={`nav-item ${page === item.id ? "active" : ""}`} onClick={() => setPage(item.id)}>
+                <span className="nav-icon">{item.icon}</span>
+                {item.label}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="sidebar-footer">
+        {metrics && (
+          <div className="model-badge">
+            <div className="model-badge-title">MODEL AUC-ROC</div>
+            <div className="model-badge-val">{metrics.auc_roc}</div>
+            <div className="model-badge-sub">GradientBoosting · Calibrated</div>
+          </div>
+        )}
+      </div>
+      {user && (
+        <div className="sidebar-user">
+          <div className="sidebar-user-avatar">{user.name.split(" ").map(n=>n[0]).join("").slice(0,2)}</div>
+          <div className="sidebar-user-info">
+            <div className="sidebar-user-name">{user.name}</div>
+            <div className="sidebar-user-role">{user.role}</div>
+          </div>
+          <button className="logout-btn" onClick={onLogout} title="Logout">⏻</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Custom Tooltip ───────────────────────────────────────────────────────────
+function CTooltip({ active, payload, label }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="custom-tooltip">
+      <div style={{ color: "var(--text3)", marginBottom: 4, fontSize: 11 }}>{label}</div>
+      {payload.map((p, i) => (
+        <div key={i} style={{ color: p.color || "var(--text)" }}>{p.name}: {typeof p.value === 'number' ? p.value.toFixed ? p.value.toFixed(2) : p.value : p.value}</div>
+      ))}
+    </div>
+  );
+}
+
+// ── Intervene Modal ──────────────────────────────────────────────────────────
+function InterveneModal({ student, onClose, onSubmit }) {
+  const [type, setType] = useState("Academic Counselor");
+  const [notes, setNotes] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    try {
+      await fetch(`${API}/interventions/${student.student_id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type, notes, advisor: "Faculty Advisor" }),
+      });
+      setDone(true);
+      setTimeout(() => { onSubmit(); onClose(); }, 1200);
+    } catch { setSubmitting(false); }
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal fade-in" onClick={e => e.stopPropagation()}>
+        {done ? (
+          <div style={{ textAlign: "center", padding: "20px 0" }}>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
+            <div style={{ fontSize: 16, fontWeight: 600 }}>Intervention Initiated</div>
+            <div style={{ fontSize: 13, color: "var(--text3)", marginTop: 4 }}>{type} scheduled for {student.name}</div>
+          </div>
+        ) : (
+          <>
+            <div className="modal-title">🚀 Initiate Intervention</div>
+            <div style={{ fontSize: 13, color: "var(--text2)", marginBottom: 16 }}>
+              Student: <strong>{student.name}</strong> ({student.student_id}) · Risk: <span style={{ color: riskColor(student.risk_level) }}>{student.risk_level}</span>
+            </div>
+            <select className="modal-select" value={type} onChange={e => setType(e.target.value)}>
+              <option>Academic Counselor</option>
+              <option>Peer Tutoring</option>
+              <option>Financial Aid Counseling</option>
+              <option>Mental Health Referral</option>
+              <option>Academic Re-planning</option>
+              <option>Scholarship Information</option>
+            </select>
+            <textarea className="modal-textarea" placeholder="Additional notes (optional)…" value={notes} onChange={e => setNotes(e.target.value)}/>
+            <div className="modal-actions">
+              <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
+              <button className="btn btn-primary" onClick={handleSubmit} disabled={submitting}>{submitting ? "Submitting…" : "Initiate"}</button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Faculty Dashboard ────────────────────────────────────────────────────────
+function FacultyDashboard({ setPage, setSelectedId }) {
+  const [summary, setSummary] = useState(null);
+  const [topRisk, setTopRisk] = useState([]);
+
+  useEffect(() => {
+    fetch(`${API}/dashboard/summary`).then(r => r.json()).then(setSummary);
+    fetch(`${API}/students?risk_level=High`).then(r => r.json()).then(d => setTopRisk(d.slice(0, 8)));
+  }, []);
+
+  const goToStudent = (id) => { setSelectedId(id); setPage("detail"); };
+
+  if (!summary) return <div className="loading">Loading dashboard…</div>;
+
+  const pieData = [
+    { name: "High Risk", value: summary.high_risk, color: "#ef4444" },
+    { name: "Medium Risk", value: summary.medium_risk, color: "#f59e0b" },
+    { name: "Low Risk", value: summary.low_risk, color: "#10b981" },
+  ];
+
+  const deptData = Object.entries(summary.dept_breakdown).map(([dept, d]) => ({
+    name: dept.replace("Information Technology", "IT").replace("Computer Science", "CS").replace("Electronics", "ECE"),
+    High: d.High, Medium: d.Medium, Low: d.Low,
+  }));
+
+  const weeklyTrend = [
+    { week: "Week 1", high: Math.round(summary.high_risk * 0.6), medium: Math.round(summary.medium_risk * 0.7) },
+    { week: "Week 2", high: Math.round(summary.high_risk * 0.7), medium: Math.round(summary.medium_risk * 0.8) },
+    { week: "Week 3", high: Math.round(summary.high_risk * 0.8), medium: Math.round(summary.medium_risk * 0.9) },
+    { week: "Week 4", high: Math.round(summary.high_risk * 0.85), medium: Math.round(summary.medium_risk * 0.95) },
+    { week: "Week 5", high: Math.round(summary.high_risk * 0.93), medium: Math.round(summary.medium_risk * 0.97) },
+    { week: "Week 6", high: summary.high_risk, medium: summary.medium_risk },
+  ];
+
+  // Heatmap
+  const heatmap = summary.heatmap || {};
+  const depts = Object.keys(heatmap);
+  const weeks = ["W1","W2","W3","W4","W5","W6"];
+
+  return (
+    <div className="content">
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: "var(--text3)", marginBottom: 4 }}>OVERVIEW</div>
+        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 28, letterSpacing: "-0.5px" }}>Faculty Dashboard</h1>
+        <div style={{ fontSize: 13, color: "var(--text3)", marginTop: 4 }}>Academic Risk Intelligence · Current Semester</div>
+      </div>
+
+      {/* STAT CARDS */}
+      <div className="stats-grid">
+        <div className="stat-card blue">
+          <div className="stat-icon">🎓</div>
+          <div className="stat-val">{summary.total}</div>
+          <div className="stat-label">Total Students</div>
+          <div className="stat-sub">Across all departments</div>
+        </div>
+        <div className="stat-card red">
+          <div className="stat-icon">⚠️</div>
+          <div className="stat-val" style={{ color: "var(--red)" }}>{summary.high_risk}</div>
+          <div className="stat-label">High Risk</div>
+          <div className="stat-sub">{((summary.high_risk/summary.total)*100).toFixed(1)}% of students</div>
+        </div>
+        <div className="stat-card yellow">
+          <div className="stat-icon">🔔</div>
+          <div className="stat-val" style={{ color: "var(--yellow)" }}>{summary.medium_risk}</div>
+          <div className="stat-label">Medium Risk</div>
+          <div className="stat-sub">Needs monitoring</div>
+        </div>
+        <div className="stat-card green">
+          <div className="stat-icon">✅</div>
+          <div className="stat-val" style={{ color: "var(--green)" }}>{summary.low_risk}</div>
+          <div className="stat-label">Low Risk</div>
+          <div className="stat-sub">Performing well</div>
+        </div>
+      </div>
+
+      {/* CHARTS ROW 1 */}
+      <div className="two-col">
+        <div className="card">
+          <div className="card-title">Risk Distribution</div>
+          <ResponsiveContainer width="100%" height={200}>
+            <PieChart>
+              <Pie data={pieData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value">
+                {pieData.map((entry, i) => <Cell key={i} fill={entry.color} stroke="none"/>)}
+              </Pie>
+              <Tooltip content={<CTooltip/>}/>
+              <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, color: "var(--text2)" }}/>
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="card">
+          <div className="card-title">6-Week Risk Trend</div>
+          <ResponsiveContainer width="100%" height={200}>
+            <LineChart data={weeklyTrend}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)"/>
+              <XAxis dataKey="week" tick={{ fontSize: 11, fill: "var(--text3)" }} axisLine={false} tickLine={false}/>
+              <YAxis tick={{ fontSize: 11, fill: "var(--text3)" }} axisLine={false} tickLine={false}/>
+              <Tooltip content={<CTooltip/>}/>
+              <Line type="monotone" dataKey="high" name="High Risk" stroke="#ef4444" strokeWidth={2} dot={{ r: 3 }}/>
+              <Line type="monotone" dataKey="medium" name="Medium Risk" stroke="#f59e0b" strokeWidth={2} dot={{ r: 3 }}/>
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* RISK HEATMAP */}
+      {depts.length > 0 && (
+        <div className="card full-row">
+          <div className="card-title">🔥 Cohort Risk Heatmap — Department × Week</div>
+          <div style={{ overflowX: "auto" }}>
+            <div className="heatmap-grid" style={{ gridTemplateColumns: `140px repeat(6, 1fr)`, maxWidth: 700 }}>
+              <div></div>
+              {weeks.map(w => <div key={w} className="heatmap-header">{w}</div>)}
+              {depts.map(dept => (
+                <React.Fragment key={dept}>
+                  <div className="heatmap-label">{dept.replace("Information Technology","IT").replace("Computer Science","CS")}</div>
+                  {heatmap[dept].map((val, i) => (
+                    <div key={i} className="heatmap-cell" style={{ background: heatColor(val), color: val >= 35 ? "#fff" : "var(--text)" }}>
+                      {val}%
+                    </div>
+                  ))}
+                </React.Fragment>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* DEPT CHART */}
+      <div className="card full-row">
+        <div className="card-title">Risk by Department</div>
+        <ResponsiveContainer width="100%" height={200}>
+          <BarChart data={deptData} barSize={18}>
+            <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false}/>
+            <XAxis dataKey="name" tick={{ fontSize: 12, fill: "var(--text3)" }} axisLine={false} tickLine={false}/>
+            <YAxis tick={{ fontSize: 11, fill: "var(--text3)" }} axisLine={false} tickLine={false}/>
+            <Tooltip content={<CTooltip/>}/>
+            <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12, color: "var(--text2)" }}/>
+            <Bar dataKey="High" name="High Risk" fill="#ef4444" radius={[4,4,0,0]}/>
+            <Bar dataKey="Medium" name="Medium Risk" fill="#f59e0b" radius={[4,4,0,0]}/>
+            <Bar dataKey="Low" name="Low Risk" fill="#10b981" radius={[4,4,0,0]}/>
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* TOP AT-RISK TABLE */}
+      <div className="card full-row">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+          <div className="card-title" style={{ marginBottom: 0 }}>⚠️ Top At-Risk Students — Immediate Attention</div>
+          <button className="btn btn-secondary" style={{ fontSize: 12, padding: "5px 12px" }} onClick={() => setPage("students")}>View All →</button>
+        </div>
+        <div className="table-wrap">
+          <table>
+            <thead><tr>
+              <th>Student</th><th>Dept</th><th>Risk Score</th><th>Attendance</th><th>SGPA</th><th>Backlogs</th><th>Action</th>
+            </tr></thead>
+            <tbody>
+              {topRisk.map(s => (
+                <tr key={s.student_id} onClick={() => goToStudent(s.student_id)}>
+                  <td className="name">
+                    <div>{s.name}</div>
+                    <div style={{ fontSize: 11, color: "var(--text3)", fontFamily: "var(--font-mono)" }}>{s.student_id}</div>
+                  </td>
+                  <td>{s.department.replace("Information Technology","IT").replace("Computer Science","CS")}</td>
+                  <td>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span className={`risk-badge ${s.risk_level}`}>● {s.risk_level}</span>
+                      <span className="mono" style={{ color: riskColor(s.risk_level) }}>{(s.risk_score*100).toFixed(0)}%</span>
+                    </div>
+                    <div className="prog-bar" style={{ width: 80, marginTop: 5 }}>
+                      <div className="prog-fill" style={{ width: `${s.risk_score*100}%`, background: riskColor(s.risk_level) }}/>
+                    </div>
+                  </td>
+                  <td style={{ color: attendanceColor(s.attendance_rate) }}>{s.attendance_rate}%</td>
+                  <td className="mono" style={{ color: s.sgpa < 5.5 ? "var(--red)" : "var(--text)" }}>{s.sgpa}</td>
+                  <td className="mono" style={{ color: s.backlogs >= 2 ? "var(--red)" : "var(--text2)" }}>{s.backlogs}</td>
+                  <td>
+                    <button className="btn btn-primary" style={{ fontSize: 11, padding: "4px 10px" }}>View Profile</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Student List ─────────────────────────────────────────────────────────────
+function StudentList({ setPage, setSelectedId }) {
+  const [students, setStudents] = useState([]);
+  const [depts, setDepts] = useState([]);
+  const [risk, setRisk] = useState("All");
+  const [dept, setDept] = useState("All");
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API}/departments`).then(r => r.json()).then(setDepts);
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (risk !== "All") params.set("risk_level", risk);
+    if (dept !== "All") params.set("department", dept);
+    if (search) params.set("search", search);
+    fetch(`${API}/students?${params}`).then(r => r.json()).then(d => { setStudents(d); setLoading(false); });
+  }, [risk, dept, search]);
+
+  const goTo = (id) => { setSelectedId(id); setPage("detail"); };
+
+  return (
+    <div className="content">
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: "var(--text3)", marginBottom: 4 }}>STUDENT MANAGEMENT</div>
+        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 28, letterSpacing: "-0.5px" }}>All Students</h1>
+      </div>
+      <div className="filters">
+        <input className="search-input" placeholder="🔍  Search by name or ID…" value={search} onChange={e => setSearch(e.target.value)}/>
+        <select className="filter-select" value={risk} onChange={e => setRisk(e.target.value)}>
+          <option value="All">All Risk Levels</option>
+          <option value="High">High Risk</option>
+          <option value="Medium">Medium Risk</option>
+          <option value="Low">Low Risk</option>
+        </select>
+        <select className="filter-select" value={dept} onChange={e => setDept(e.target.value)}>
+          <option value="All">All Departments</option>
+          {depts.map(d => <option key={d} value={d}>{d}</option>)}
+        </select>
+        <div style={{ marginLeft: "auto", fontSize: 13, color: "var(--text3)" }}>
+          {students.length} students
+        </div>
+      </div>
+      <div className="card">
+        {loading ? <div className="loading">Loading…</div> : (
+          <div className="table-wrap">
+            <table>
+              <thead><tr>
+                <th>Student</th><th>Department</th><th>Sem</th><th>Risk</th>
+                <th>Attendance</th><th>SGPA</th><th>Failed</th><th>Backlogs</th><th></th>
+              </tr></thead>
+              <tbody>
+                {students.map(s => (
+                  <tr key={s.student_id} onClick={() => goTo(s.student_id)}>
+                    <td className="name">
+                      <div>{s.name}</div>
+                      <div style={{ fontSize: 11, color: "var(--text3)", fontFamily: "var(--font-mono)" }}>{s.student_id} · {s.gender}</div>
+                    </td>
+                    <td style={{ color: "var(--text2)", fontSize: 12 }}>{s.department}</td>
+                    <td className="mono">{s.semester}</td>
+                    <td>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <span className={`risk-badge ${s.risk_level}`}>● {s.risk_level}</span>
+                        <span style={{ fontSize: 11, fontFamily: "var(--font-mono)", color: riskColor(s.risk_level) }}>
+                          {(s.risk_score*100).toFixed(0)}%
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ color: attendanceColor(s.attendance_rate), fontFamily: "var(--font-mono)", fontSize: 12 }}>{s.attendance_rate}%</div>
+                      <div className="prog-bar" style={{ width: 70 }}>
+                        <div className="prog-fill" style={{ width: `${s.attendance_rate}%`, background: attendanceColor(s.attendance_rate) }}/>
+                      </div>
+                    </td>
+                    <td className="mono" style={{ color: s.sgpa < 5.5 ? "var(--red)" : "var(--text)" }}>{s.sgpa}</td>
+                    <td className="mono" style={{ color: s.failed_subjects >= 2 ? "var(--red)" : "var(--text2)" }}>{s.failed_subjects}</td>
+                    <td className="mono" style={{ color: s.backlogs >= 3 ? "var(--red)" : "var(--text2)" }}>{s.backlogs}</td>
+                    <td>
+                      <button className="btn btn-primary" style={{ fontSize: 11, padding: "4px 10px" }}>Profile →</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Student Detail ────────────────────────────────────────────────────────────
+function StudentDetail({ studentId, goBack }) {
+  const [student, setStudent] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const loadStudent = () => {
+    if (studentId) {
+      fetch(`${API}/students/${studentId}`).then(r => r.json()).then(setStudent);
+    }
+  };
+  useEffect(loadStudent, [studentId]);
+
+  if (!student) return <div className="loading">Loading student profile…</div>;
+
+  const weeklyData = student.weekly_risks.map((v, i) => ({
+    week: `W${i+1}`, risk: (v*100).toFixed(1)
+  }));
+
+  const subjects = Object.entries(student.subject_scores);
+  const radarData = subjects.map(([name, score]) => ({ subject: name.replace(" Subject", ""), score }));
+
+  const positiveFactors = student.contributions.filter(c => c.impact > 0).slice(0, 4);
+  const protectiveFactors = student.contributions.filter(c => c.impact <= 0).slice(0, 4);
+  const maxImpact = Math.max(...student.contributions.map(c => Math.abs(c.impact)));
+
+  const initials = student.name.split(" ").map(n => n[0]).join("").slice(0, 2);
+  const allInterventions = [...(student.intervention_history || []), ...(student.logged_interventions || [])];
+
+  return (
+    <div className="content">
+      {showModal && <InterveneModal student={student} onClose={() => setShowModal(false)} onSubmit={loadStudent}/>}
+
+      {/* HEADER */}
+      <div className="detail-header">
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div className="detail-avatar">{initials}</div>
+          <div className="detail-info">
+            <div className="detail-name">{student.name}</div>
+            <div className="detail-meta">
+              {student.student_id} · {student.department} · Semester {student.semester} · {student.gender}
+              {student.assigned_advisor && <span> · Advisor: {student.assigned_advisor}</span>}
+            </div>
+            <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
+              <span className={`risk-badge ${student.risk_level}`}>● {student.risk_level} Risk · {(student.risk_score*100).toFixed(0)}%</span>
+              {student.first_gen && <span style={{ background: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.3)", color: "#c4b5fd", borderRadius: 20, padding: "2px 10px", fontSize: 11, fontWeight: 600 }}>First-Gen</span>}
+              {student.origin === "Rural" && <span style={{ background: "rgba(20,184,166,0.15)", border: "1px solid rgba(20,184,166,0.3)", color: "#5eead4", borderRadius: 20, padding: "2px 10px", fontSize: 11, fontWeight: 600 }}>Rural</span>}
+              <span style={{ background: "var(--bg3)", border: "1px solid var(--border2)", color: "var(--text3)", borderRadius: 20, padding: "2px 10px", fontSize: 11 }}>{student.scholarship === "None" ? "No Scholarship" : student.scholarship + " Scholarship"}</span>
+            </div>
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 10 }}>
+          <button className="btn btn-primary" onClick={() => setShowModal(true)}>🚀 Initiate Intervention</button>
+          <button className="back-btn" onClick={goBack}>← Back</button>
+        </div>
+      </div>
+
+      {/* QUICK STATS */}
+      <div className="stats-grid" style={{ gridTemplateColumns: "repeat(5,1fr)", marginBottom: 20 }}>
+        {[
+          { label: "Attendance", val: `${student.attendance_rate}%`, color: attendanceColor(student.attendance_rate) },
+          { label: "SGPA", val: student.sgpa, color: student.sgpa >= 6 ? "var(--green)" : student.sgpa >= 5 ? "var(--yellow)" : "var(--red)" },
+          { label: "Avg Score", val: `${student.avg_score}%`, color: scoreColor(student.avg_score) === "good" ? "var(--green)" : scoreColor(student.avg_score) === "avg" ? "var(--yellow)" : "var(--red)" },
+          { label: "Backlogs", val: student.backlogs, color: student.backlogs === 0 ? "var(--green)" : student.backlogs <= 2 ? "var(--yellow)" : "var(--red)" },
+          { label: "Days Inactive", val: student.days_inactive, color: student.days_inactive <= 3 ? "var(--green)" : student.days_inactive <= 7 ? "var(--yellow)" : "var(--red)" },
+        ].map((item, i) => (
+          <div key={i} className="stat-card" style={{ borderTop: `3px solid ${item.color}` }}>
+            <div className="stat-val" style={{ fontSize: 24, color: item.color }}>{item.val}</div>
+            <div className="stat-label">{item.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* FACILITY USAGE */}
+      {student.facility_usage && (
+        <div className="card full-row">
+          <div className="card-title">🏗️ Facility Usage Logs</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12 }}>
+            <div style={{ background: "var(--bg3)", borderRadius: 10, padding: 14, textAlign: "center" }}>
+              <div style={{ fontSize: 11, color: "var(--text3)", marginBottom: 6 }}>LAB HOURS/WEEK</div>
+              <div style={{ fontSize: 24, fontFamily: "var(--font-mono)", color: "var(--accent2)" }}>{student.facility_usage.lab_hours_per_week}</div>
+            </div>
+            <div style={{ background: "var(--bg3)", borderRadius: 10, padding: 14, textAlign: "center" }}>
+              <div style={{ fontSize: 11, color: "var(--text3)", marginBottom: 6 }}>SPORTS VISITS</div>
+              <div style={{ fontSize: 24, fontFamily: "var(--font-mono)", color: "var(--teal)" }}>{student.facility_usage.sports_facility_visits}</div>
+            </div>
+            <div style={{ background: "var(--bg3)", borderRadius: 10, padding: 14, textAlign: "center" }}>
+              <div style={{ fontSize: 11, color: "var(--text3)", marginBottom: 6 }}>CANTEEN/DAY</div>
+              <div style={{ fontSize: 24, fontFamily: "var(--font-mono)", color: "var(--yellow)" }}>{student.facility_usage.canteen_transactions_per_day}</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SUBJECT SCORES */}
+      <div style={{ marginBottom: 6 }}>
+        <div className="card-title">Subject Performance</div>
+      </div>
+      <div className="subject-grid">
+        {subjects.map(([name, score]) => (
+          <div key={name} className="subject-card">
+            <div className="subject-name">{name}</div>
+            <div className={`subject-score ${scoreColor(score)}`}>{score}</div>
+            <div className="prog-bar" style={{ marginTop: 8 }}>
+              <div className="prog-fill" style={{ width: `${score}%`, background: scoreColor(score) === "good" ? "var(--green)" : scoreColor(score) === "avg" ? "var(--yellow)" : "var(--red)" }}/>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* CHARTS */}
+      <div className="two-col">
+        <div className="card">
+          <div className="card-title">6-Week Risk Trajectory</div>
+          <ResponsiveContainer width="100%" height={180}>
+            <LineChart data={weeklyData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false}/>
+              <XAxis dataKey="week" tick={{ fontSize: 11, fill: "var(--text3)" }} axisLine={false} tickLine={false}/>
+              <YAxis domain={[0, 100]} tick={{ fontSize: 11, fill: "var(--text3)" }} axisLine={false} tickLine={false}/>
+              <Tooltip content={<CTooltip/>}/>
+              <Line type="monotone" dataKey="risk" name="Risk %" stroke={riskColor(student.risk_level)} strokeWidth={2.5} dot={{ r: 4, fill: riskColor(student.risk_level) }}/>
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="card">
+          <div className="card-title">Subject Radar</div>
+          <ResponsiveContainer width="100%" height={180}>
+            <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="75%">
+              <PolarGrid stroke="var(--border2)"/>
+              <PolarAngleAxis dataKey="subject" tick={{ fontSize: 10, fill: "var(--text3)" }}/>
+              <Radar name="Score" dataKey="score" stroke="var(--accent)" fill="var(--accent)" fillOpacity={0.2} strokeWidth={2}/>
+            </RadarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* RISK FACTORS */}
+      <div className="two-col" style={{ marginTop: 16 }}>
+        <div className="card">
+          <div className="card-title" style={{ color: "var(--red)" }}>⚠ Risk-Increasing Factors</div>
+          {positiveFactors.length === 0 ? <div style={{ color: "var(--text3)", fontSize: 13 }}>No significant risk factors</div> : null}
+          {positiveFactors.map((c, i) => (
+            <div key={i} className="factor-row">
+              <div className="factor-label">{c.label}</div>
+              <div className="factor-bar-wrap">
+                <div className="factor-fill risk-fill" style={{ width: `${(Math.abs(c.impact)/maxImpact)*100}%` }}/>
+              </div>
+              <div className="factor-val" style={{ color: "var(--red)" }}>+{c.impact.toFixed(3)}</div>
+            </div>
+          ))}
+        </div>
+        <div className="card">
+          <div className="card-title" style={{ color: "var(--green)" }}>✓ Protective Factors</div>
+          {protectiveFactors.length === 0 ? <div style={{ color: "var(--text3)", fontSize: 13 }}>None detected</div> : null}
+          {protectiveFactors.map((c, i) => (
+            <div key={i} className="factor-row">
+              <div className="factor-label">{c.label}</div>
+              <div className="factor-bar-wrap">
+                <div className="factor-fill prot-fill" style={{ width: `${(Math.abs(c.impact)/maxImpact)*100}%` }}/>
+              </div>
+              <div className="factor-val" style={{ color: "var(--green)" }}>{c.impact.toFixed(3)}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* INTERVENTIONS */}
+      <div className="card" style={{ marginTop: 16 }}>
+        <div className="card-title">📋 Recommended Interventions</div>
+        {student.interventions.map((iv, i) => (
+          <div key={i} className="intervention-card">
+            <div className="intervention-icon">{iv.icon}</div>
+            <div style={{ flex: 1 }}>
+              <div className="intervention-type">{iv.type}</div>
+              <div className="intervention-reason">{iv.reason}</div>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div className={`priority-dot ${iv.priority}`}/>
+              <span style={{ fontSize: 11, color: "var(--text3)", fontWeight: 600 }}>{iv.priority}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* INTERVENTION HISTORY */}
+      {allInterventions.length > 0 && (
+        <div className="card" style={{ marginTop: 16 }}>
+          <div className="card-title">📜 Intervention History & Effectiveness</div>
+          <div className="table-wrap">
+            <table>
+              <thead><tr><th>Date</th><th>Type</th><th>Status</th><th>Risk Before</th><th>Risk After</th><th>Reduction</th></tr></thead>
+              <tbody>
+                {allInterventions.map((iv, i) => (
+                  <tr key={i} style={{ cursor: "default" }}>
+                    <td className="mono">{iv.date}</td>
+                    <td>{iv.type}</td>
+                    <td><span className={`status-badge ${(iv.status||"Scheduled").replace(" ","")}`}>{iv.status || "Scheduled"}</span></td>
+                    <td className="mono" style={{ color: "var(--red)" }}>{iv.risk_before ? (iv.risk_before*100).toFixed(0)+"%" : "—"}</td>
+                    <td className="mono" style={{ color: "var(--green)" }}>{iv.risk_after ? (iv.risk_after*100).toFixed(0)+"%" : "—"}</td>
+                    <td className="mono" style={{ color: "var(--green)" }}>{iv.effectiveness ? `↓${iv.effectiveness}%` : "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Intervention Tracker ─────────────────────────────────────────────────────
+function InterventionTracker() {
+  const [interventions, setInterventions] = useState([]);
+  const [effectiveness, setEffectiveness] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      fetch(`${API}/interventions`).then(r => r.json()),
+      fetch(`${API}/interventions/effectiveness`).then(r => r.json()),
+    ]).then(([ivs, eff]) => {
+      setInterventions(ivs);
+      setEffectiveness(eff);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) return <div className="loading">Loading interventions…</div>;
+
+  const effData = effectiveness?.by_type || [];
+
+  return (
+    <div className="content">
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: "var(--text3)", marginBottom: 4 }}>INTERVENTION MANAGEMENT</div>
+        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 28, letterSpacing: "-0.5px" }}>Intervention Tracker</h1>
+        <div style={{ fontSize: 13, color: "var(--text3)", marginTop: 4 }}>Track, measure, and improve intervention outcomes</div>
+      </div>
+
+      {/* EFFECTIVENESS STATS */}
+      <div className="stats-grid" style={{ gridTemplateColumns: "repeat(3,1fr)", marginBottom: 24 }}>
+        <div className="stat-card" style={{ borderTop: "3px solid var(--accent)" }}>
+          <div className="stat-val" style={{ fontSize: 28, color: "var(--accent2)" }}>{effectiveness?.total_interventions || 0}</div>
+          <div className="stat-label">Total Interventions</div>
+          <div className="stat-sub">Across all students</div>
+        </div>
+        <div className="stat-card" style={{ borderTop: "3px solid var(--green)" }}>
+          <div className="stat-val" style={{ fontSize: 28, color: "var(--green)" }}>{effectiveness?.avg_risk_reduction || 0}%</div>
+          <div className="stat-label">Avg Risk Reduction</div>
+          <div className="stat-sub">Mean improvement after intervention</div>
+        </div>
+        <div className="stat-card" style={{ borderTop: "3px solid var(--purple)" }}>
+          <div className="stat-val" style={{ fontSize: 28, color: "var(--purple)" }}>{effectiveness?.total_students_with_interventions || 0}</div>
+          <div className="stat-label">Students Reached</div>
+          <div className="stat-sub">Received at least one intervention</div>
+        </div>
+      </div>
+
+      {/* EFFECTIVENESS BY TYPE */}
+      <div className="two-col">
+        <div className="card">
+          <div className="card-title">Effectiveness by Intervention Type</div>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={effData} barSize={28} layout="vertical">
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false}/>
+              <XAxis type="number" tick={{ fontSize: 11, fill: "var(--text3)" }} axisLine={false} tickLine={false} unit="%"/>
+              <YAxis type="category" dataKey="type" tick={{ fontSize: 10, fill: "var(--text2)" }} axisLine={false} tickLine={false} width={140}/>
+              <Tooltip content={<CTooltip/>}/>
+              <Bar dataKey="effectiveness_rate" name="Success Rate %" fill="var(--green)" radius={[0,4,4,0]}/>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="card">
+          <div className="card-title">Avg Risk Reduction by Type</div>
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={effData} barSize={28} layout="vertical">
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false}/>
+              <XAxis type="number" tick={{ fontSize: 11, fill: "var(--text3)" }} axisLine={false} tickLine={false} unit="%"/>
+              <YAxis type="category" dataKey="type" tick={{ fontSize: 10, fill: "var(--text2)" }} axisLine={false} tickLine={false} width={140}/>
+              <Tooltip content={<CTooltip/>}/>
+              <Bar dataKey="avg_risk_reduction" name="Avg Risk Reduction %" fill="var(--accent)" radius={[0,4,4,0]}/>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* RECENT INTERVENTIONS TABLE */}
+      <div className="card" style={{ marginTop: 16 }}>
+        <div className="card-title">Recent Interventions ({interventions.length})</div>
+        <div className="table-wrap" style={{ maxHeight: 400, overflowY: "auto" }}>
+          <table>
+            <thead><tr><th>Date</th><th>Student</th><th>Dept</th><th>Type</th><th>Status</th><th>Risk Before</th><th>Risk After</th></tr></thead>
+            <tbody>
+              {interventions.slice(0, 50).map((iv, i) => (
+                <tr key={i} style={{ cursor: "default" }}>
+                  <td className="mono">{iv.date || "—"}</td>
+                  <td className="name">
+                    <div>{iv.student_name || "—"}</div>
+                    <div style={{ fontSize: 10, color: "var(--text3)", fontFamily: "var(--font-mono)" }}>{iv.student_id || ""}</div>
+                  </td>
+                  <td style={{ fontSize: 12 }}>{iv.department || "—"}</td>
+                  <td>{iv.type}</td>
+                  <td><span className={`status-badge ${(iv.status||"Scheduled").replace(" ","")}`}>{iv.status || "Scheduled"}</span></td>
+                  <td className="mono" style={{ color: "var(--red)" }}>{iv.risk_before ? (iv.risk_before*100).toFixed(0)+"%" : "—"}</td>
+                  <td className="mono" style={{ color: "var(--green)" }}>{iv.risk_after ? (iv.risk_after*100).toFixed(0)+"%" : "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── SHAP Showcase ────────────────────────────────────────────────────────────
+function ShapShowcase() {
+  const [samples, setSamples] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API}/shap/samples`).then(r => r.json()).then(d => { setSamples(d); setLoading(false); });
+  }, []);
+
+  if (loading) return <div className="loading">Loading SHAP explanations…</div>;
+
+  return (
+    <div className="content">
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: "var(--text3)", marginBottom: 4 }}>EXPLAINABLE AI</div>
+        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 28, letterSpacing: "-0.5px" }}>SHAP Explanations</h1>
+        <div style={{ fontSize: 13, color: "var(--text3)", marginTop: 4 }}>Feature attribution — why each student is at risk (10 sample students)</div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        {samples.map((s, idx) => {
+          const maxImp = Math.max(...s.contributions.map(c => Math.abs(c.impact)));
+          return (
+            <div key={idx} className="card">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+                <div>
+                  <div style={{ fontWeight: 600, fontSize: 14 }}>{s.name}</div>
+                  <div style={{ fontSize: 11, color: "var(--text3)", fontFamily: "var(--font-mono)" }}>{s.student_id} · {s.department}</div>
+                </div>
+                <span className={`risk-badge ${s.risk_level}`}>● {s.risk_level} · {(s.risk_score*100).toFixed(0)}%</span>
+              </div>
+              {s.contributions.map((c, i) => (
+                <div key={i} className="factor-row" style={{ marginBottom: 6 }}>
+                  <div className="factor-label" style={{ width: 130, fontSize: 11 }}>{c.label}</div>
+                  <div className="factor-bar-wrap" style={{ height: 14 }}>
+                    <div className={`factor-fill ${c.direction === "risk" ? "risk-fill" : "prot-fill"}`}
+                      style={{ width: `${(Math.abs(c.impact)/maxImp)*100}%` }}/>
+                  </div>
+                  <div className="factor-val" style={{ width: 65, fontSize: 10, color: c.direction === "risk" ? "var(--red)" : "var(--green)" }}>
+                    {c.impact > 0 ? "+" : ""}{c.impact.toFixed(3)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ── Equity Analytics ─────────────────────────────────────────────────────────
+function EquityAnalytics() {
+  const [summary, setSummary] = useState(null);
+  useEffect(() => { fetch(`${API}/dashboard/summary`).then(r => r.json()).then(setSummary); }, []);
+  if (!summary) return <div className="loading">Loading…</div>;
+
+  const { equity } = summary;
+  const fg = equity.first_gen;
+  const ge = equity.gender;
+  const or = equity.origin;
+  const sc = equity.scholarship || {};
+
+  const fgRate = (fg.first_gen_high / fg.first_gen_total * 100).toFixed(1);
+  const nfgRate = (fg.non_first_gen_high / fg.non_first_gen_total * 100).toFixed(1);
+  const mRate = (ge.male_high / ge.male_total * 100).toFixed(1);
+  const fRate = (ge.female_high / ge.female_total * 100).toFixed(1);
+
+  const originData = Object.entries(or).map(([k, v]) => ({ name: k, pct: v.pct, high: v.high, total: v.total }));
+  const scholarshipData = Object.entries(sc).map(([k, v]) => ({ name: k, pct: v.pct, high: v.high, total: v.total }));
+
+  const fgBarData = [
+    { name: "First-Gen", rate: parseFloat(fgRate) },
+    { name: "Non First-Gen", rate: parseFloat(nfgRate) },
+  ];
+  const genderBarData = [
+    { name: "Male", rate: parseFloat(mRate) },
+    { name: "Female", rate: parseFloat(fRate) },
+  ];
+
+  return (
+    <div className="content">
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: "var(--text3)", marginBottom: 4 }}>EQUITY & FAIRNESS</div>
+        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 28, letterSpacing: "-0.5px" }}>Equity Analytics</h1>
+        <div style={{ fontSize: 13, color: "var(--text3)", marginTop: 4 }}>High-risk rate disaggregated across student demographics</div>
+      </div>
+
+      <div className="three-col">
+        {/* First-Gen */}
+        <div className="card">
+          <div className="card-title">First-Generation Students</div>
+          <ResponsiveContainer width="100%" height={160}>
+            <BarChart data={fgBarData} barSize={40}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false}/>
+              <XAxis dataKey="name" tick={{ fontSize: 11, fill: "var(--text3)" }} axisLine={false} tickLine={false}/>
+              <YAxis tick={{ fontSize: 10, fill: "var(--text3)" }} axisLine={false} tickLine={false} unit="%"/>
+              <Tooltip content={<CTooltip/>}/>
+              <Bar dataKey="rate" name="High Risk Rate %" radius={[4,4,0,0]}>
+                {fgBarData.map((_, i) => <Cell key={i} fill={i === 0 ? "#ef4444" : "#3b82f6"}/>)}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+          <div style={{ marginTop: 12 }}>
+            <div className="equity-row">
+              <span className="equity-label">First-Gen High Risk Rate</span>
+              <span className="equity-pct" style={{ color: parseFloat(fgRate) > parseFloat(nfgRate) ? "var(--red)" : "var(--green)" }}>{fgRate}%</span>
+            </div>
+            <div className="equity-row">
+              <span className="equity-label">Non First-Gen Rate</span>
+              <span className="equity-pct">{nfgRate}%</span>
+            </div>
+            <div className="equity-row" style={{ border: "none" }}>
+              <span className="equity-label" style={{ color: "var(--text3)" }}>Equity Gap</span>
+              <span className="equity-pct" style={{ color: "var(--yellow)" }}>+{(fgRate - nfgRate).toFixed(1)}%</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Gender */}
+        <div className="card">
+          <div className="card-title">Gender Breakdown</div>
+          <ResponsiveContainer width="100%" height={160}>
+            <BarChart data={genderBarData} barSize={40}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false}/>
+              <XAxis dataKey="name" tick={{ fontSize: 11, fill: "var(--text3)" }} axisLine={false} tickLine={false}/>
+              <YAxis tick={{ fontSize: 10, fill: "var(--text3)" }} axisLine={false} tickLine={false} unit="%"/>
+              <Tooltip content={<CTooltip/>}/>
+              <Bar dataKey="rate" name="High Risk Rate %" radius={[4,4,0,0]}>
+                {genderBarData.map((_, i) => <Cell key={i} fill={i === 0 ? "#3b82f6" : "#8b5cf6"}/>)}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+          <div style={{ marginTop: 12 }}>
+            <div className="equity-row">
+              <span className="equity-label">Male High Risk Rate</span>
+              <span className="equity-pct">{mRate}%</span>
+            </div>
+            <div className="equity-row">
+              <span className="equity-label">Female High Risk Rate</span>
+              <span className="equity-pct">{fRate}%</span>
+            </div>
+            <div className="equity-row" style={{ border: "none" }}>
+              <span className="equity-label" style={{ color: "var(--text3)" }}>Total Students</span>
+              <span className="equity-pct">{ge.male_total + ge.female_total}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Origin */}
+        <div className="card">
+          <div className="card-title">Geographic Origin</div>
+          <ResponsiveContainer width="100%" height={160}>
+            <BarChart data={originData} barSize={40}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false}/>
+              <XAxis dataKey="name" tick={{ fontSize: 10, fill: "var(--text3)" }} axisLine={false} tickLine={false}/>
+              <YAxis tick={{ fontSize: 10, fill: "var(--text3)" }} axisLine={false} tickLine={false} unit="%"/>
+              <Tooltip content={<CTooltip/>}/>
+              <Bar dataKey="pct" name="High Risk Rate %" radius={[4,4,0,0]}>
+                {originData.map((_, i) => <Cell key={i} fill={["#ef4444","#3b82f6","#f59e0b"][i]}/>)}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+          <div style={{ marginTop: 12 }}>
+            {originData.map((o, i) => (
+              <div key={i} className="equity-row" style={{ border: i === originData.length-1 ? "none" : undefined }}>
+                <span className="equity-label">{o.name}</span>
+                <span className="equity-pct" style={{ color: o.pct > 20 ? "var(--red)" : "var(--text)" }}>{o.pct}% ({o.high}/{o.total})</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* SCHOLARSHIP EQUITY */}
+      <div className="card full-row" style={{ marginTop: 16 }}>
+        <div className="card-title">🎫 Scholarship Category Breakdown</div>
+        <div className="two-col">
+          <div>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={scholarshipData} barSize={32}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false}/>
+                <XAxis dataKey="name" tick={{ fontSize: 10, fill: "var(--text3)" }} axisLine={false} tickLine={false}/>
+                <YAxis tick={{ fontSize: 10, fill: "var(--text3)" }} axisLine={false} tickLine={false} unit="%"/>
+                <Tooltip content={<CTooltip/>}/>
+                <Bar dataKey="pct" name="High Risk Rate %" radius={[4,4,0,0]}>
+                  {scholarshipData.map((_, i) => <Cell key={i} fill={["#ef4444","#10b981","#f59e0b","#8b5cf6","#3b82f6"][i]}/>)}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div>
+            {scholarshipData.map((s, i) => (
+              <div key={i} className="equity-row">
+                <span className="equity-label">{s.name}</span>
+                <span className="equity-pct" style={{ color: s.pct > 20 ? "var(--red)" : "var(--text)" }}>{s.pct}% ({s.high}/{s.total} high-risk)</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Insight box */}
+      <div className="card" style={{ background: "rgba(59,130,246,0.05)", border: "1px solid rgba(59,130,246,0.2)" }}>
+        <div className="card-title" style={{ color: "var(--accent2)" }}>📊 Key Equity Insights</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          {[
+            { icon: "🎓", text: `First-generation students face ${(fgRate-nfgRate).toFixed(1)}% higher dropout risk — priority for financial counseling.` },
+            { icon: "🌾", text: `Rural students at ${or["Rural"]?.pct || 0}% high-risk rate — hostel support and peer programs recommended.` },
+            { icon: "📚", text: `Students without scholarships make up the majority of high-risk cases — aid eligibility review needed.` },
+            { icon: "⚡", text: `Early intervention in Semester 1–2 can reduce risk propagation by an estimated 40%.` },
+          ].map((item, i) => (
+            <div key={i} style={{ background: "var(--bg3)", borderRadius: 10, padding: "12px 14px", display: "flex", gap: 10 }}>
+              <span style={{ fontSize: 18 }}>{item.icon}</span>
+              <span style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.5 }}>{item.text}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Support Hub ──────────────────────────────────────────────────────────────
+function SupportHub() {
+  const [opportunities, setOpportunities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showPostModal, setShowPostModal] = useState(false);
+  const [filter, setFilter] = useState("All");
+
+  const loadOpps = () => {
+    fetch(`${API}/opportunities`).then(r => r.json()).then(d => { setOpportunities(d); setLoading(false); });
+  };
+  useEffect(loadOpps, []);
+
+  const catIcon = (cat) => cat === "Hackathon" ? "💻" : cat === "Scholarship" ? "🎓" : "💡";
+  const catColor = (cat) => cat === "Hackathon" ? "#3b82f6" : cat === "Scholarship" ? "#10b981" : "#8b5cf6";
+
+  const filtered = filter === "All" ? opportunities : opportunities.filter(o => o.category === filter);
+
+  const daysUntil = (deadline) => {
+    const diff = Math.ceil((new Date(deadline) - new Date()) / (1000 * 60 * 60 * 24));
+    if (diff < 0) return "Expired";
+    if (diff === 0) return "Today!";
+    return `${diff} days left`;
+  };
+
+  if (loading) return <div className="loading">Loading opportunities…</div>;
+
+  return (
+    <div className="content">
+      {showPostModal && <PostOpportunityModal onClose={() => setShowPostModal(false)} onSubmit={() => { setShowPostModal(false); loadOpps(); }}/>}
+
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: "var(--text3)", marginBottom: 4 }}>RESOURCES</div>
+        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 28, letterSpacing: "-0.5px" }}>Support Hub</h1>
+        <div style={{ fontSize: 13, color: "var(--text3)", marginTop: 4 }}>Hackathons, Scholarships & Funding — curated for CSE students</div>
+      </div>
+
+      {/* STATS */}
+      <div className="stats-grid" style={{ gridTemplateColumns: "repeat(4,1fr)", marginBottom: 24 }}>
+        <div className="stat-card" style={{ borderTop: "3px solid var(--accent)", cursor: "pointer" }} onClick={() => setFilter("All")}>
+          <div className="stat-icon">📌</div>
+          <div className="stat-val" style={{ fontSize: 28, color: "var(--accent2)" }}>{opportunities.length}</div>
+          <div className="stat-label">Total Opportunities</div>
+        </div>
+        <div className="stat-card" style={{ borderTop: "3px solid #3b82f6", cursor: "pointer" }} onClick={() => setFilter("Hackathon")}>
+          <div className="stat-icon">💻</div>
+          <div className="stat-val" style={{ fontSize: 28, color: "#93c5fd" }}>{opportunities.filter(o => o.category === "Hackathon").length}</div>
+          <div className="stat-label">Hackathons</div>
+        </div>
+        <div className="stat-card" style={{ borderTop: "3px solid #10b981", cursor: "pointer" }} onClick={() => setFilter("Scholarship")}>
+          <div className="stat-icon">🎓</div>
+          <div className="stat-val" style={{ fontSize: 28, color: "#6ee7b7" }}>{opportunities.filter(o => o.category === "Scholarship").length}</div>
+          <div className="stat-label">Scholarships</div>
+        </div>
+        <div className="stat-card" style={{ borderTop: "3px solid #8b5cf6", cursor: "pointer" }} onClick={() => setFilter("Funding")}>
+          <div className="stat-icon">💡</div>
+          <div className="stat-val" style={{ fontSize: 28, color: "#c4b5fd" }}>{opportunities.filter(o => o.category === "Funding").length}</div>
+          <div className="stat-label">Funding</div>
+        </div>
+      </div>
+
+      {/* TOOLBAR */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+        <div className="filters">
+          <select className="filter-select" value={filter} onChange={e => setFilter(e.target.value)}>
+            <option value="All">All Categories</option>
+            <option value="Hackathon">Hackathons</option>
+            <option value="Scholarship">Scholarships</option>
+            <option value="Funding">Funding</option>
+          </select>
+          <span style={{ fontSize: 13, color: "var(--text3)" }}>{filtered.length} of {opportunities.length} shown</span>
+        </div>
+        <button className="btn btn-primary" onClick={() => setShowPostModal(true)}>+ Post Opportunity</button>
+      </div>
+
+      {/* CARDS GRID */}
+      <div className="opp-grid">
+        {filtered.map(opp => (
+          <div key={opp.id} className={`opp-card ${opp.category}`}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <span className={`opp-cat ${opp.category}`}>{catIcon(opp.category)} {opp.category}</span>
+              <span style={{ fontSize: 11, padding: "3px 8px", borderRadius: 12, background: "var(--bg3)", color: catColor(opp.category), fontWeight: 600, fontFamily: "var(--font-mono)" }}>
+                {daysUntil(opp.deadline)}
+              </span>
+            </div>
+            <div className="opp-title">{opp.title}</div>
+            <div className="opp-desc">{opp.description}</div>
+            <div className="opp-deadline">
+              <span className="opp-deadline-icon">📅</span>
+              Deadline: {opp.deadline}
+            </div>
+          </div>
+        ))}
+        {filtered.length === 0 && (
+          <div style={{ gridColumn: "1 / -1", padding: 40, textAlign: "center", color: "var(--text3)" }}>
+            No opportunities in this category yet. Click "Post Opportunity" to add one.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Post Opportunity Modal ───────────────────────────────────────────────────
+function PostOpportunityModal({ onClose, onSubmit }) {
+  const [category, setCategory] = useState("Hackathon");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [deadline, setDeadline] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!title || !description || !deadline) return;
+    setSubmitting(true);
+    try {
+      await fetch(`${API}/opportunities`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ category, title, description, deadline }),
+      });
+      setDone(true);
+      setTimeout(() => onSubmit(), 1200);
+    } catch (err) {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal fade-in" onClick={e => e.stopPropagation()} style={{ width: 520 }}>
+        {done ? (
+          <div style={{ textAlign: "center", padding: "20px 0" }}>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>✅</div>
+            <div style={{ fontSize: 16, fontWeight: 600 }}>Opportunity Posted!</div>
+            <div style={{ fontSize: 13, color: "var(--text3)", marginTop: 4 }}>{title} added to Support Hub</div>
+          </div>
+        ) : (
+          <>
+            <div className="modal-title">📢 Post Opportunity</div>
+            <div style={{ fontSize: 13, color: "var(--text2)", marginBottom: 16 }}>Share a hackathon, scholarship, or funding opportunity with CSE students</div>
+
+            <div style={{ fontSize: 12, color: "var(--text3)", marginBottom: 4, fontWeight: 600 }}>CATEGORY</div>
+            <select className="modal-select" value={category} onChange={e => setCategory(e.target.value)}>
+              <option>Hackathon</option>
+              <option>Scholarship</option>
+              <option>Funding</option>
+            </select>
+
+            <div style={{ fontSize: 12, color: "var(--text3)", marginBottom: 4, fontWeight: 600 }}>TITLE</div>
+            <input className="login-input" style={{ marginBottom: 12 }} placeholder="Enter opportunity title…" value={title} onChange={e => setTitle(e.target.value)}/>
+
+            <div style={{ fontSize: 12, color: "var(--text3)", marginBottom: 4, fontWeight: 600 }}>DESCRIPTION</div>
+            <textarea className="modal-textarea" placeholder="Describe the opportunity, eligibility, prizes…" value={description} onChange={e => setDescription(e.target.value)}/>
+
+            <div style={{ fontSize: 12, color: "var(--text3)", marginBottom: 4, fontWeight: 600 }}>DEADLINE</div>
+            <input className="login-input" type="date" style={{ marginBottom: 16 }} value={deadline} onChange={e => setDeadline(e.target.value)}/>
+
+            <div className="modal-actions">
+              <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
+              <button className="btn btn-primary" onClick={handleSubmit} disabled={submitting || !title || !description || !deadline}>
+                {submitting ? "Posting…" : "Post Opportunity"}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ── Model Metrics ────────────────────────────────────────────────────────────
+function ModelMetrics() {
+  const [data, setData] = useState(null);
+  useEffect(() => { fetch(`${API}/model/metrics`).then(r => r.json()).then(setData); }, []);
+  if (!data) return <div className="loading">Loading…</div>;
+
+  const fiEntries = Object.entries(data.feature_importance)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 12);
+  const maxFI = fiEntries[0][1];
+  const cm = data.confusion_matrix || [[0,0],[0,0]];
+
+  return (
+    <div className="content">
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: "var(--text3)", marginBottom: 4 }}>SYSTEM</div>
+        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 28, letterSpacing: "-0.5px" }}>Model Metrics</h1>
+        <div style={{ fontSize: 13, color: "var(--text3)", marginTop: 4 }}>GradientBoosting Classifier · Calibrated · 300 students</div>
+      </div>
+
+      <div className="stats-grid" style={{ gridTemplateColumns: "repeat(5,1fr)", marginBottom: 24 }}>
+        {[
+          { label: "AUC-ROC", val: data.auc_roc, color: "var(--green)", sub: "Model discrimination" },
+          { label: "Precision", val: data.precision, color: "var(--accent2)", sub: "Positive predictive value" },
+          { label: "Recall", val: data.recall, color: "var(--purple)", sub: "True positive rate" },
+          { label: "F1 Score", val: data.f1_score, color: "var(--teal)", sub: "Harmonic mean P/R" },
+          { label: "Avg Precision", val: data.average_precision, color: "var(--yellow)", sub: "Precision-recall area" },
+        ].map((item, i) => (
+          <div key={i} className="stat-card" style={{ borderTop: `3px solid ${item.color}` }}>
+            <div className="stat-val" style={{ fontSize: 28, color: item.color }}>{item.val}</div>
+            <div className="stat-label">{item.label}</div>
+            <div className="stat-sub">{item.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="two-col">
+        <div className="card">
+          <div className="card-title">Feature Importance (Top 12)</div>
+          {fiEntries.map(([feat, val], i) => (
+            <div key={i} className="fi-row">
+              <div className="fi-label">{data.feature_labels[feat] || feat}</div>
+              <div className="fi-bar">
+                <div className="fi-fill" style={{ width: `${(val/maxFI)*100}%` }}/>
+              </div>
+              <div className="fi-val">{(val*100).toFixed(1)}%</div>
+            </div>
+          ))}
+        </div>
+        <div>
+          {/* Confusion Matrix */}
+          <div className="card" style={{ marginBottom: 16 }}>
+            <div className="card-title">Confusion Matrix</div>
+            <div style={{ display: "flex", justifyContent: "center", padding: "10px 0" }}>
+              <div className="cm-grid">
+                <div></div>
+                <div className="cm-header">Pred Safe</div>
+                <div className="cm-header">Pred Risk</div>
+                <div className="cm-header" style={{ textAlign: "right", paddingRight: 8 }}>Actual Safe</div>
+                <div className="cm-cell" style={{ background: "rgba(16,185,129,0.2)", color: "var(--green)" }}>{cm[0][0]}</div>
+                <div className="cm-cell" style={{ background: "rgba(239,68,68,0.15)", color: "var(--red)" }}>{cm[0][1]}</div>
+                <div className="cm-header" style={{ textAlign: "right", paddingRight: 8 }}>Actual Risk</div>
+                <div className="cm-cell" style={{ background: "rgba(239,68,68,0.15)", color: "var(--red)" }}>{cm[1][0]}</div>
+                <div className="cm-cell" style={{ background: "rgba(16,185,129,0.2)", color: "var(--green)" }}>{cm[1][1]}</div>
+              </div>
+            </div>
+          </div>
+          {/* Model Info */}
+          <div className="card">
+            <div className="card-title">Model Information</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {[
+                { label: "Algorithm", val: "GradientBoostingClassifier" },
+                { label: "Calibration", val: "Sigmoid (CalibratedCV)" },
+                { label: "Estimators", val: "200" },
+                { label: "Max Depth", val: "4" },
+                { label: "Learning Rate", val: "0.05" },
+                { label: "CV Folds", val: "5" },
+                { label: "Target", val: "Dropout (binary)" },
+                { label: "Detection Window", val: "6-week advance" },
+                { label: "At-Risk Students", val: data.n_at_risk },
+                { label: "Safe Students", val: data.n_safe },
+                { label: "Train Size", val: data.train_size },
+                { label: "Test Size", val: data.test_size },
+              ].map((row, i) => (
+                <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid var(--border)", fontSize: 13 }}>
+                  <span style={{ color: "var(--text3)" }}>{row.label}</span>
+                  <span style={{ fontFamily: "var(--font-mono)", color: "var(--text)", fontSize: 12 }}>{row.val}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── App Shell ────────────────────────────────────────────────────────────────
+function App() {
+  const [user, setUser] = useState(null);
+  const [page, setPage] = useState("faculty");
+  const [selectedId, setSelectedId] = useState(null);
+  const [metrics, setMetrics] = useState(null);
+  const [theme, setTheme] = useState(() => localStorage.getItem("aris-theme") || "dark");
+
+  useEffect(() => {
+    fetch(`${API}/model/metrics`).then(r => r.json()).then(setMetrics).catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.className = theme === "light" ? "light" : "";
+    document.body.className = theme === "light" ? "light" : "";
+    localStorage.setItem("aris-theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme(t => t === "dark" ? "light" : "dark");
+
+  const pageTitles = {
+    faculty: "Faculty Dashboard",
+    students: "Student List",
+    tracker: "Intervention Tracker",
+    hub: "Support Hub",
+    equity: "Equity Analytics",
+    shap: "SHAP Explanations",
+    model: "Model Metrics",
+    detail: "Student Profile",
+  };
+
+  const goBack = () => setPage(selectedId ? "students" : "faculty");
+  const handleLogout = () => { setUser(null); setPage("faculty"); };
+
+  if (!user) return <LoginScreen onLogin={setUser}/>;
+
+  return (
+    <div className="app">
+      <Sidebar page={page} setPage={setPage} metrics={metrics} user={user} onLogout={handleLogout}/>
+      <div className="main">
+        <div className="topbar">
+          <div className="topbar-title">{pageTitles[page] || "ARIS"}</div>
+          <div className="topbar-right">
+            <div className="theme-toggle" onClick={toggleTheme} title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}>
+              <span className="theme-toggle-label">{theme === "dark" ? "🌙" : "☀️"}</span>
+              <div className="theme-toggle-track">
+                <div className="theme-toggle-thumb"/>
+              </div>
+            </div>
+            <div className="topbar-badge">🕐 Live · Current Semester</div>
+            <div className="topbar-badge">🎓 70 Students Tracked</div>
+          </div>
+        </div>
+        {page === "faculty"  && <FacultyDashboard setPage={setPage} setSelectedId={setSelectedId}/>}
+        {page === "students" && <StudentList setPage={setPage} setSelectedId={setSelectedId}/>}
+        {page === "detail"   && <StudentDetail studentId={selectedId} goBack={goBack}/>}
+        {page === "tracker"  && <InterventionTracker/>}
+        {page === "hub"      && <SupportHub/>}
+        {page === "equity"   && <EquityAnalytics/>}
+        {page === "shap"     && <ShapShowcase/>}
+        {page === "model"    && <ModelMetrics/>}
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>

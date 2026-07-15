@@ -1,0 +1,38 @@
+{
+  "auc_roc": 1.0,
+  "average_precision": 1.0,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1_score": 1.0,
+  "confusion_matrix": [
+    [
+      36,
+      0
+    ],
+    [
+      0,
+      24
+    ]
+  ],
+  "train_size": 240,
+  "test_size": 60,
+  "features": [
+    "attendance_rate",
+    "attendance_trend",
+    "avg_score",
+    "score_trend",
+    "assignments_ontime_pct",
+    "avg_submission_delay",
+    "library_visits_per_week",
+    "failed_subjects",
+    "sgpa",
+    "sgpa_trend",
+    "days_inactive",
+    "backlogs",
+    "first_gen",
+    "is_rural",
+    "has_scholarship"
+  ],
+  "n_at_risk": 122,
+  "n_safe": 178
+}

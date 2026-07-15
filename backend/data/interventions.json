@@ -1,0 +1,13 @@
+[
+  {
+    "intervention_id": "INT-STU1027-RT1",
+    "student_id": "STU1027",
+    "student_name": "Meena Singh",
+    "date": "2026-04-12",
+    "type": "Financial Aid Counseling",
+    "notes": "Initiated Financial Aid Counseling intervention for Meena Singh",
+    "advisor": "Faculty Advisor",
+    "risk_at_intervention": 0.789,
+    "status": "Scheduled"
+  }
+]

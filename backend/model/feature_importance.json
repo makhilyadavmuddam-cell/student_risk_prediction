@@ -1,0 +1,17 @@
+{
+  "attendance_rate": 0.15436022413646358,
+  "attendance_trend": 0.1380642152342155,
+  "avg_score": 2.34417953314662e-16,
+  "score_trend": 9.92276718780182e-07,
+  "assignments_ontime_pct": 0.09337824631631754,
+  "avg_submission_delay": 0.2037697518460853,
+  "library_visits_per_week": 1.7983947525380094e-05,
+  "failed_subjects": 0.0,
+  "sgpa": 0.0,
+  "sgpa_trend": 0.08270984701197957,
+  "days_inactive": 0.32769873923069404,
+  "backlogs": 0.0,
+  "first_gen": 0.0,
+  "is_rural": 0.0,
+  "has_scholarship": 0.0
+}
